@@ -18,15 +18,13 @@ fn init_dict(msg: &str) -> HashMap<String, String> {
 	dict
 }
 
-fn update_dict_size(dict: &mut HashMap<String, String>) -> usize {
+fn update_dict_size(dict: &mut HashMap<String, String>) {
 	let size = dict.len();
 	let size_log = log_size(size);
-	for k in dict.keys().into_iter_mut() {
-		let mut bin = dict.get_mut(k).unwrap();
-		let bin_clone = bin.clone();
-		*bin = format!("{:0width$}", bin_clone, width = size_log);
-	}
-	size
+	dict.iter_mut().for_each(|(_, v)| {
+		let v_int = v.parse::<usize>().unwrap();
+		*v = format!("{v_int:0width$}", width = size_log);
+	});
 }
 
 fn log_size(x: usize) -> usize {
@@ -40,7 +38,7 @@ fn main() {
 		"data/textes/texte_4.txt",
 		"data/textes/texte_5.txt",
 	];
-	let msg = fs::read_to_string(FILES[2]).unwrap();
+	let msg = fs::read_to_string(FILES[4]).unwrap();
 	let mut dict = init_dict(&msg);
 	update_dict_size(&mut dict);
 	println!("{:?}", dict);
