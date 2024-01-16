@@ -78,6 +78,8 @@ def run(index: int, verbose: int = 1) -> dict[str, str]:
         print(f"Initial length: {initial_length}")
     coded_msg, length = compress(msg, dict_symb)
     compressed = time.time()
+    with open("../out/python_comp.bin", "w") as f:
+        f.write("".join(coded_msg))
     if verbose > 2:
         print(f"Coded message: {coded_msg}")
     if verbose > 1:

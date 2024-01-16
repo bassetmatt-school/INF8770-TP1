@@ -1,13 +1,14 @@
 use std::{
 	collections::{hash_map, HashMap},
+	fs,
 	time::Instant,
 };
 
-fn init_dict(msg: &str) -> HashMap<String, String> {
+fn init_dict(msg: &str) -> HashMap<&str, String> {
 	let mut dict = HashMap::new();
 	let mut n_symb = 0;
 	for i in 0..msg.len() {
-		let c = msg[i..i + 1].to_string();
+		let c = &msg[i..i + 1];
 		// If the character is not in the dictionary, we add it
 		if let hash_map::Entry::Vacant(e) = dict.entry(c) {
 			e.insert(format!("{n_symb:b}"));
@@ -17,15 +18,23 @@ fn init_dict(msg: &str) -> HashMap<String, String> {
 	dict
 }
 
-fn update_dict_size(dict: &mut HashMap<String, String>) {
-	let size_log = log_size(dict.len());
-	dict.iter_mut().for_each(|(_, v)| {
-		let v_int = v.parse::<usize>().unwrap();
-		*v = format!("{v_int:0width$}", width = size_log);
-	});
+fn update_dict_size(dict: &mut HashMap<&str, String>, one_zero: bool) {
+	if one_zero {
+		dict.iter_mut().for_each(|(_, v)| {
+			v.insert(0, '0');
+		});
+	} else {
+		let size_log = log_size(dict.len());
+		dict.iter_mut().for_each(|(_, v)| {
+			let new_zeros = size_log - v.len();
+			for _ in 0..new_zeros {
+				v.insert(0, '0');
+			}
+		});
+	}
 }
 
-fn compress(msg: &str, dict: &mut HashMap<String, String>) -> (String, usize) {
+fn compress<'a>(msg: &'a str, dict: &mut HashMap<&'a str, String>) -> (String, usize) {
 	let mut compressed = String::new();
 	let mut n_symb = dict.len();
 	let mut i = 0;
@@ -47,13 +56,12 @@ fn compress(msg: &str, dict: &mut HashMap<String, String>) -> (String, usize) {
 
 		if i < msg.len() {
 			let bin = format!("{n_symb:b}");
-			dict.insert(next_extra.to_string(), bin);
+			n_symb += 1;
+			if log_size(n_symb) > bin_code.len() {
+				update_dict_size(dict, true);
+			}
+			dict.insert(next_extra, bin);
 		}
-		if log_size(n_symb) >= bin_code.len() {
-			update_dict_size(dict);
-		}
-		n_symb = dict.len();
-		// compressed.push_str(&String::from("'"));
 	}
 	(compressed, length)
 }
@@ -63,8 +71,8 @@ fn log_size(x: usize) -> usize {
 }
 
 #[allow(dead_code)]
-fn print_dict(dict: &HashMap<String, String>) {
-	let mut keys = dict.keys().collect::<Vec<&String>>();
+fn print_dict(dict: &HashMap<&str, String>) {
+	let mut keys = dict.keys().collect::<Vec<&&str>>();
 	keys.sort_by_key(|k| i32::from_str_radix(dict.get(*k).unwrap(), 2).unwrap());
 	for k in keys {
 		println!("{}: {}", k, dict.get(k).unwrap());
@@ -85,7 +93,7 @@ fn main() {
 	let mut dict = init_dict(msg);
 	let init_length = msg.len() * (log_size(dict.len()) as usize);
 	let loading_time = start_time.elapsed();
-	update_dict_size(&mut dict);
+	update_dict_size(&mut dict, false);
 
 	// println!("Dict: {:?}", dict);
 	let start_compress = Instant::now();
@@ -93,6 +101,7 @@ fn main() {
 	let compress_time = start_compress.elapsed();
 	let total_time = start_time.elapsed();
 	// println!("Compressed: {}", _compressed);
+	fs::write("../out/rust_comp.bin", _compressed).expect("Yo");
 	println!("Length: {}", length);
 	println!(
 		"Compression ratio: {:.2}%",
