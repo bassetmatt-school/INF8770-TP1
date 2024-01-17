@@ -103,4 +103,4 @@ def run(index: int, verbose: int = 1) -> dict[str, str]:
     return dict_symb
 
 
-dict_symb = run(5, verbose=1)
+dict_symb = run(4, verbose=1)
