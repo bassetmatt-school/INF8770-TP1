@@ -15,3 +15,21 @@ Results
 | 3      | 204  | 1.12               | 11.38     |
 | 4      | 910  | 1.00               | 43.12     |
 | 5      | 7998 | 1.36               | 223.40    |
+
+## Question 3
+Compression sans perte
+
+Entropique:
+- Huffman -> Ouais
+- Arithmétique -> Bof
+- Golomb -> Voir
+
+Dictionnaire
+- Paire d'octets -> Voir
+- LZ77 -> Ouais
+- LZW -> Évidemment
+
+Autre
+- Plage -> Voir
+- Chaîne -> Voir
+- Pêedictif -> Voir

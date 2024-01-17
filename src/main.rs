@@ -103,7 +103,12 @@ fn lzw_run(msg: &[u8], write: bool, verbose: usize, unit: Option<Unit>) -> (f32,
 	let start_time = Instant::now();
 	// Creates the dictionary from the message's symbols
 	let mut dict = init_dict(msg);
-	let init_length = msg.len() * (log_size(dict.len()) as usize);
+	// Avoid 0-sized message if the dictionary only contains 1 symbol
+	let init_length = if log_size(dict.len()) == 0 {
+		msg.len()
+	} else {
+		msg.len() * log_size(dict.len())
+	};
 	// Adds 0s to the dictionary's symbols to have the same length
 	update_dict_size(&mut dict, false);
 	let init_time = start_time.elapsed();
