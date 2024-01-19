@@ -1,0 +1,126 @@
+\documentclass{article}[letterpaper, 11pt]
+\usepackage{geometry}
+\geometry{left=0.75in,top=0.75in,bottom = 0.75in,right=0.75in}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usepackage{amssymb}
+\usepackage{enumitem}
+
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+
+\usepackage{svg}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+
+\usepackage[parfill]{parskip}
+
+\usepackage{color}   %May be necessary if you want to color links
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=black,  %choose some color if you want links to stand out
+}
+
+%Style :
+\pagestyle{fancy}
+\renewcommand{\thepage}{}
+%commancer le compte des pages après
+\setlength{\headsep}{14.5pt}
+
+%Style nouveau chapitre
+\fancyhf{}
+\fancyhead[L]{\small INF8770 --- Technologies multimédias}
+\fancyhead[C]{\small TP1 --- Méthodes de codage}
+\fancyhead[R]{\small Page \thepage\hspace{1pt} sur~\pageref{LastPage}}
+\fancyfoot[L]{\scriptsize Polytechnique Montréal}
+\fancyfoot[C]{\scriptsize Matthieu Basset, Hiver 2024}
+\fancyfoot[R]{\scriptsize Département de GIGL}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.2pt}
+
+\title{
+    \includegraphics[scale=0.8]{poly-logo.pdf}\\\vspace*{50pt}
+    \huge\textbf{INF8770}\\
+    \textbf{Technologies Multimédias}\\
+    Travail pratique \#1\\
+    Méthodes de codage\\
+}
+\author{\Large Matthieu Basset}
+\date{\huge Janvier 2024}
+\begin{document}
+
+\thispagestyle{empty}
+\maketitle
+
+\newpage
+
+\renewcommand{\thepage}{\arabic{page}}
+\pagestyle{fancy}
+\renewcommand{\contentsname}{Table des matières}
+\setcounter{page}{1}
+
+\tableofcontents
+
+
+\newpage
+
+\section{Introduction}
+Compte rendu du TP1
+\subsection{Questions}
+Rappel des questions? Useless de fou
+\newpage
+\section{Réponses}
+\subsection{Question 1}
+Oui
+\subsection{Question 2}
+
+Deux images:
+
+\begin{figure}[h]
+	\begin{minipage}[c]{.49\linewidth}
+		 \centering
+		 \includegraphics[scale = 0.25]{poly-logo.pdf}
+	\end{minipage}
+	\begin{minipage}[c]{.49\linewidth}
+		 \centering
+		 \includegraphics[scale = 0.25]{poly-logo.pdf}
+	\end{minipage}
+		 \caption{ \centering Deux fois le logo de Poly, ouais.}
+\end{figure}
+
+Une magnifique liste à tirets:
+\begin{itemize}[label={--}]
+	\item Un
+	\item Deux
+	\item Trois
+\end{itemize}
+Une autre liste, cette fois avec des chiffres
+\begin{enumerate}[label={E\arabic*.}]
+	\item item
+	\item item
+	\item item
+\end{enumerate}
+
+Une liste qui suit les numéros (wow)
+
+\begin{enumerate}[label={E\arabic*.}, resume]
+	\item item
+	\item item
+\end{enumerate}
+
+\newpage
+\section*{ANNEXES}
+
+\setcounter{section}{0}
+\renewcommand{\thesection}{\Alph{section}}
+\section{Première section d'annexe}
+Des trucs, des refs??
+
+\newpage
+\section{Formules utilisées}\label{sec:truc}
+\subsection{Autre annexe}
+Texte
+\end{document}
