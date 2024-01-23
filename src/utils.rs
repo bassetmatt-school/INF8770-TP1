@@ -1,4 +1,9 @@
-use std::fmt::Display;
+use std::{cmp::Ordering, fmt::Display};
+
+/// Returns the number of bits needed to encode a number
+pub fn log_size(x: usize) -> usize {
+	(x as f64).log2().ceil() as usize
+}
 
 #[derive(Debug, Copy, Clone)]
 pub enum Unit {
@@ -47,3 +52,36 @@ macro_rules! load_img(
 		image::load_from_memory_with_format(include_bytes!($p), ImageFormat::Png).unwrap()
 	};
 );
+
+fn _argmin<T: PartialOrd>(v: &Vec<T>) -> usize {
+	let mut argmin = 0;
+	for i in 1..v.len() {
+		if v[i] < v[argmin] {
+			argmin = i;
+		}
+	}
+	argmin
+}
+
+fn _optimal_repeat_counter(repeat: &[usize], dict_size: u32) -> usize {
+	let max_k = log_size(*repeat.iter().max().unwrap());
+	let symb_size = log_size(dict_size as usize);
+	let mut waste_list = Vec::new();
+	for k in 1..=max_k {
+		let mut waste = 0;
+		for &r in repeat.iter() {
+			let opti_bits = log_size(r);
+			match opti_bits.cmp(&k) {
+				Ordering::Less => waste += k - opti_bits,
+				Ordering::Equal => (),
+				Ordering::Greater => {
+					let used = ((r >> k) + 1) * (k + symb_size);
+					let ideal = opti_bits + symb_size;
+					waste += ideal - used;
+				},
+			}
+		}
+		waste_list.push(waste);
+	}
+	_argmin(&waste_list)
+}

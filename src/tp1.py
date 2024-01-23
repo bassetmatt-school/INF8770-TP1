@@ -103,4 +103,44 @@ def run(index: int, verbose: int = 1) -> dict[str, str]:
     return dict_symb
 
 
-dict_symb = run(4, verbose=1)
+def optimal_repeat_counter(repeats: list[int], dict_size: int) -> int:
+    # Symbols can be repeated at most max_k times
+    max_k = int(log_size(max(repeats)))
+    symbol_size = log_size(dict_size)
+    waste_list = []
+    # Test all the k values for bit size encoding
+    for k in range(1, max_k+1):
+        # Bits wasted by non optimal encoding
+        wasted = 0
+        for x in repeats:
+            # Number of bits to optimally count x
+            opti_bits = log_size(x)
+            # Optimal case
+            if (opti_bits == k):
+                continue
+            # k too big, wasted bits = difference
+            elif (opti_bits < k):
+                wasted += k - opti_bits
+            # k too low
+            else:
+                # We are going to use (x/2**k + 1) repetitions, and each repetition
+                # is encoded on k bits + symbol_size bits for the symbol
+                used = (np.floor(x / 2**k) + 1) * (k + symbol_size)
+                # Ideally, we would have used opti_bits + symbol_size bits
+                ideal = opti_bits + symbol_size
+                # Wasted bits are the difference
+                wasted += used - ideal
+        waste_list.append(wasted)
+    # Retrieve the k value that minimizes the wasted bits
+    waste_list = np.asarray(waste_list, dtype=np.int32)
+    print(f"Wasted bits: {waste_list}")
+    return np.argmin(waste_list)+1
+
+
+if __name__ == "__main__":
+    # dict_symb = run(4, verbose=1)
+
+    L = [4, 5, 6, 7, 3, 2, 1, 7, 7, 3, 4, 2, 3, 4, 5, 4, 3, 2]
+    n_symb = 5
+    k = optimal_repeat_counter(L, n_symb)
+    print(k)

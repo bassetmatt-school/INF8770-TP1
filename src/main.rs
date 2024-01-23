@@ -5,7 +5,7 @@ use std::{
 	fs,
 	time::Instant,
 };
-use utils::{stats, Unit};
+use utils::{log_size, stats, Unit};
 
 fn init_dict(msg: &[u8]) -> HashMap<&[u8], String> {
 	let mut dict = HashMap::new();
@@ -80,11 +80,6 @@ fn compress<'a>(msg: &'a [u8], dict: &mut HashMap<&'a [u8], String>) -> (String,
 		}
 	}
 	(compressed, length)
-}
-
-/// Returns the number of bits needed to encode a number
-fn log_size(x: usize) -> usize {
-	(x as f64).log2().ceil() as usize
 }
 
 #[allow(dead_code)]
