@@ -75,11 +75,11 @@ fn _optimal_repeat_counter(repeat: &[usize], dict_size: u32) -> usize {
 		for &r in repeat.iter() {
 			// Number of bits needed to optimally encode the repeat
 			let opti_bits = log_size(r);
-			match opti_bits.cmp(&k) {
+			waste += match opti_bits.cmp(&k) {
 				// k too big, wasted = difference
-				Ordering::Less => waste += k - opti_bits,
+				Ordering::Less => k - opti_bits,
 				// Optimal case
-				Ordering::Equal => (),
+				Ordering::Equal => 0,
 				// k too small
 				Ordering::Greater => {
 					// We use (x/ 2^k) + 1 counters, each of size k + symb_size
@@ -87,7 +87,7 @@ fn _optimal_repeat_counter(repeat: &[usize], dict_size: u32) -> usize {
 					// Ideally, we would use opti_bits + symb_size
 					let ideal = opti_bits + symb_size;
 					// Difference is wasted
-					waste += ideal - used;
+					ideal - used
 				},
 			}
 		}

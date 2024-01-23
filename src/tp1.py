@@ -133,7 +133,6 @@ def optimal_repeat_counter(repeats: list[int], dict_size: int) -> int:
         waste_list.append(wasted)
     # Retrieve the k value that minimizes the wasted bits
     waste_list = np.asarray(waste_list, dtype=np.int32)
-    print(f"Wasted bits: {waste_list}")
     return np.argmin(waste_list)+1
 
 
