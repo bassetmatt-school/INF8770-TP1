@@ -64,24 +64,35 @@ fn _argmin<T: PartialOrd>(v: &Vec<T>) -> usize {
 }
 
 fn _optimal_repeat_counter(repeat: &[usize], dict_size: u32) -> usize {
+	// Maximum number of bits needed to encode a repeat
 	let max_k = log_size(*repeat.iter().max().unwrap());
 	let symb_size = log_size(dict_size as usize);
 	let mut waste_list = Vec::new();
+	// Test for each number of bits
 	for k in 1..=max_k {
+		// Bits wasted for non optimal encoding
 		let mut waste = 0;
 		for &r in repeat.iter() {
+			// Number of bits needed to optimally encode the repeat
 			let opti_bits = log_size(r);
 			match opti_bits.cmp(&k) {
+				// k too big, wasted = difference
 				Ordering::Less => waste += k - opti_bits,
+				// Optimal case
 				Ordering::Equal => (),
+				// k too small
 				Ordering::Greater => {
+					// We use (x/ 2^k) + 1 counters, each of size k + symb_size
 					let used = ((r >> k) + 1) * (k + symb_size);
+					// Ideally, we would use opti_bits + symb_size
 					let ideal = opti_bits + symb_size;
+					// Difference is wasted
 					waste += ideal - used;
 				},
 			}
 		}
 		waste_list.push(waste);
 	}
+	// Return the k value that minimizes the waste
 	_argmin(&waste_list)
 }
