@@ -21,6 +21,7 @@ impl Display for Unit {
 		}
 	}
 }
+
 impl Unit {
 	pub fn factor(&self) -> f32 {
 		match self {
