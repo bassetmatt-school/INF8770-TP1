@@ -2,20 +2,6 @@
 use std::collections::{hash_map, HashMap};
 
 use crate::utils::{log_size, optimal_repeat_counter};
-trait MessageFormat {}
-impl MessageFormat for u8 {}
-impl MessageFormat for u32 {}
-
-struct CountedValue<T> {
-	count: usize,
-	value: T,
-}
-
-impl<T> CountedValue<T> {
-	fn new(value: T) -> Self {
-		Self { count: 1, value }
-	}
-}
 
 fn convert_message(msg: &[u8], image: bool) -> Vec<u32> {
 	let mut new_msg = Vec::new();
@@ -57,12 +43,23 @@ fn update_dict_size(dict: &mut HashMap<u32, String>) {
 	});
 }
 
-fn optimal_bit_counter(msg: &[u32], dict: HashMap<u32, String>) -> usize {
-	let mut map = HashMap::new();
+fn repeat_values(array: &[u32]) -> Vec<usize> {
+	let mut repeat = Vec::new();
 	// Counting elements
-	msg.iter().for_each(|&x| {
-		*map.entry(x).or_insert(0) += 1;
+	let mut x_prec: u32 = array[0];
+	let mut n_rep: usize = 0;
+	array.iter().for_each(|&x| {
+		if x_prec == x {
+			n_rep += 1;
+		} else {
+			repeat.push(n_rep);
+			n_rep = 1;
+			x_prec = x;
+		};
 	});
-	let repeat = map.values().cloned().collect::<Vec<usize>>();
-	optimal_repeat_counter(repeat.as_slice(), dict.len())
+	repeat
+}
+
+fn optimal_bit_counter(msg: &[u32], dict: HashMap<u32, String>) -> usize {
+	optimal_repeat_counter(repeat_values(msg).as_slice(), dict.len())
 }
