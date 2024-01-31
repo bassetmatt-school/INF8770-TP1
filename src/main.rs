@@ -1,6 +1,7 @@
 mod lzw;
+mod rle;
 mod utils;
-use image::{DynamicImage, ImageFormat};
+use image::{DynamicImage, GenericImageView, ImageFormat, Pixel};
 use utils::Unit;
 
 fn main() {
@@ -51,5 +52,15 @@ fn main() {
 			lzw::stats_run(images[i].as_bytes(), 50, 1, Some(Unit::Ms));
 		}
 		println!();
+	});
+	fn n_channels(image: &DynamicImage) -> usize {
+		image.pixels().next().unwrap().2.channels().len()
+	}
+	(0..images.len()).for_each(|i| {
+		println!(
+			"Pixel: {:?}. Channels {:?}",
+			images[i].pixels().nth(324).unwrap(),
+			n_channels(&images[i]),
+		);
 	});
 }

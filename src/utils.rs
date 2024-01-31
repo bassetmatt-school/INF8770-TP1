@@ -54,7 +54,7 @@ macro_rules! load_img(
 	};
 );
 
-fn _argmin<T: PartialOrd>(v: &Vec<T>) -> usize {
+fn argmin<T: PartialOrd>(v: &Vec<T>) -> usize {
 	let mut argmin = 0;
 	for i in 1..v.len() {
 		if v[i] < v[argmin] {
@@ -64,10 +64,10 @@ fn _argmin<T: PartialOrd>(v: &Vec<T>) -> usize {
 	argmin
 }
 
-fn _optimal_repeat_counter(repeat: &[usize], dict_size: u32) -> usize {
+pub fn optimal_repeat_counter(repeat: &[usize], dict_size: usize) -> usize {
 	// Maximum number of bits needed to encode a repeat
 	let max_k = log_size(*repeat.iter().max().unwrap());
-	let symb_size = log_size(dict_size as usize);
+	let symb_size = log_size(dict_size);
 	let mut waste_list = Vec::new();
 	// Test for each number of bits
 	for k in 1..=max_k {
@@ -95,5 +95,5 @@ fn _optimal_repeat_counter(repeat: &[usize], dict_size: u32) -> usize {
 		waste_list.push(waste);
 	}
 	// Return the k value that minimizes the waste
-	_argmin(&waste_list)
+	argmin(&waste_list)
 }
