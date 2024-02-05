@@ -1,10 +1,28 @@
 mod lzw;
 mod rle;
 mod utils;
+use std::env;
+
 use image::{DynamicImage, ImageFormat};
 use utils::Unit;
 
+enum Method {
+	Lzw,
+	Rle,
+}
+
 fn main() {
+	let args = env::args().collect::<Vec<String>>();
+	let single_run = args.get(1).is_some_and(|x| x == "true");
+	let method = match args.get(2) {
+		Some(s) => match s.to_lowercase().as_str() {
+			"lzw" => Method::Lzw,
+			"rle" => Method::Rle,
+			_ => panic!("Invalid method"),
+		},
+		None => Method::Lzw,
+	};
+
 	const MESSAGES: [&[u8]; 5] = [
 		include_str!("../data/textes/texte_1.txt").as_bytes(),
 		include_str!("../data/textes/texte_2.txt").as_bytes(),
@@ -21,10 +39,6 @@ fn main() {
 		load_img!("../data/images/image_5.png"),
 	];
 
-	const SINGLE_RUN: bool = true;
-	const USE_RLE: bool = true;
-	const USE_LZW: bool = false;
-
 	// Text messages
 	println!("===================================");
 	println!("               Texts               ");
@@ -32,19 +46,24 @@ fn main() {
 	(0..MESSAGES.len()).for_each(|i| {
 		println!("-----------------------------");
 		println!("Text {}", i + 1);
-		if USE_LZW {
-			if SINGLE_RUN {
-				lzw::run(MESSAGES[i], false, 1, Some(Unit::Us));
-			} else {
-				lzw::stats_run(MESSAGES[i], 1000, 1, Some(Unit::Us));
-			}
-		}
-		if USE_RLE {
-			if SINGLE_RUN {
-				rle::run(MESSAGES[i], false, false, 1, Some(Unit::Us));
-			} else {
-				rle::stats_run(MESSAGES[i], 1000, false, 1, Some(Unit::Us));
-			}
+		let image = false;
+		let write = false;
+		const N_TEXT_RUN: usize = 1000;
+		match method {
+			Method::Lzw => {
+				if single_run {
+					lzw::run(MESSAGES[i], write, 1, Some(Unit::Us));
+				} else {
+					lzw::stats_run(MESSAGES[i], N_TEXT_RUN, 1, Some(Unit::Us));
+				}
+			},
+			Method::Rle => {
+				if single_run {
+					rle::run(MESSAGES[i], write, image, 1, Some(Unit::Us));
+				} else {
+					rle::stats_run(MESSAGES[i], N_TEXT_RUN, image, 1, Some(Unit::Us));
+				}
+			},
 		}
 		println!();
 	});
@@ -56,19 +75,24 @@ fn main() {
 	(0..images.len()).for_each(|i| {
 		println!("-----------------------------");
 		println!("Image {}", i + 1);
-		if USE_LZW {
-			if SINGLE_RUN {
-				lzw::run(images[i].as_bytes(), false, 1, Some(Unit::Ms));
-			} else {
-				lzw::stats_run(images[i].as_bytes(), 100, 1, Some(Unit::Ms));
-			}
-		}
-		if USE_RLE {
-			if SINGLE_RUN {
-				rle::run(images[i].as_bytes(), true, false, 1, Some(Unit::Ms));
-			} else {
-				rle::stats_run(images[i].as_bytes(), 100, true, 1, Some(Unit::Ms));
-			}
+		let image = true;
+		let write = false;
+		const N_IMAGE_RUN: usize = 100;
+		match method {
+			Method::Lzw => {
+				if single_run {
+					lzw::run(images[i].as_bytes(), write, 1, Some(Unit::Ms));
+				} else {
+					lzw::stats_run(images[i].as_bytes(), N_IMAGE_RUN, 1, Some(Unit::Ms));
+				}
+			},
+			Method::Rle => {
+				if single_run {
+					rle::run(images[i].as_bytes(), write, image, 1, Some(Unit::Ms));
+				} else {
+					rle::stats_run(images[i].as_bytes(), N_IMAGE_RUN, image, 1, Some(Unit::Ms));
+				}
+			},
 		}
 		println!();
 	});
