@@ -152,7 +152,6 @@ pub fn run(msg: &[u8], write: bool, verbose: usize, unit: Option<Unit>) -> (f32,
 
 /// Runs the LZW algorithm on a message multiple times and prints the mean and standard deviation of the times
 pub fn stats_run(msg: &[u8], n_run: usize, verbose: usize, unit: Option<Unit>) {
-	// Unit of the time for display
 	// Different times for execution
 	let mut init_times = Vec::new();
 	let mut compress_times = Vec::new();
@@ -169,6 +168,7 @@ pub fn stats_run(msg: &[u8], n_run: usize, verbose: usize, unit: Option<Unit>) {
 	let (mean_compress, std_compress) = stats(&compress_times);
 	let (mean_total, std_total) = stats(&total_times);
 
+	// Unit of time for display
 	let unit = unit.unwrap_or(Unit::Ms);
 	// Sub times
 	if verbose > 1 {
