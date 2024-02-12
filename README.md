@@ -24,4 +24,3 @@ The run options are:
   - `text`: Directory that contains the text data.
   - `images`: Directory that contains the images data.
 - `docs/`: Directory that contains the documentation of the project. It is written in LaTeX and it is compiled to a PDF file.
-- `archive/`: Contains the original python implementation of the first algorithm.
